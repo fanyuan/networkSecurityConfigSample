@@ -3,6 +3,7 @@ package com.sample.networkSecurityConfig;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void request(View view) {
+        ProgressDialog dialog = new ProgressDialog(this);
+        dialog.show();
         //构建Retrofit实例
         Retrofit retrofit = new Retrofit.Builder()
                 //设置网络请求BaseUrl地址
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         dataCall.enqueue(new Callback<Data<Info>>() {
             @Override
             public void onResponse(Call<Data<Info>> call, Response<Data<Info>> response) {
+                dialog.dismiss();
                 Toast.makeText(MainActivity.this, "get回调成功:异步执行", Toast.LENGTH_SHORT).show();
                 Data<Info> body = response.body();
                 if (body == null){ return;}
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Data<Info>> call, Throwable t) {
+                dialog.dismiss();
                 Log.e(TAG, "回调失败：" + t.getMessage() + "," + t.toString());
                 Toast.makeText(MainActivity.this, "回调失败", Toast.LENGTH_SHORT).show();
             }
